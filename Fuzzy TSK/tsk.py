@@ -11,6 +11,7 @@ LEARNING_RATE = 0.01
 STEP = 0.01
 
 def gaussian_calculator(x, average_x, standart_deviation_x):
+    # as defined in slides
     return math.exp((-1/2) * ((x - average_x) / standart_deviation_x)**2)
 
 def y_calculator(x,p,q):
@@ -19,32 +20,47 @@ def y_calculator(x,p,q):
     return p*x + q
 
 def tsk_calculator(w1,y1,w2,y2):
+    # y based on y1 and y2 weighted by w1 amd w2
     return (w1*y1 + w2*y2) / (w1 + w2)
 
-def adjust_pq(error, w1, w2, x, group):
+def adjust_p(error, w1, w2, x, group):
     if group == 1:
+        # de/dp1
         return LEARNING_RATE * (error * (w1 / (w1 + w2)) * x)
     else:
+        # de/dp2
         return LEARNING_RATE * (error * (w2 / (w1 + w2)) * x)
+    
+def adjust_q(error, w1, w2, x, group):
+    if group == 1:
+        # de/dq1
+        return LEARNING_RATE * (error * (w1 / (w1 + w2)))
+    else:
+        # de/dq2
+        return LEARNING_RATE * (error * (w2 / (w1 + w2)))
 
 def adjust_average_x(error, w1, w2, y1, y2, average_x, standart_deviation_x, x, group):
     if group == 1:
+        # de/daverage_x1
         return LEARNING_RATE * (error * w2 * ((y1 - y2) / (w1 + w2)**2) * w1 * ((x - average_x) / standart_deviation_x**2))
     else:
+        # de/daverage_x2
         return LEARNING_RATE * (error * w1 * ((y2 - y1) / (w1 + w2)**2) * w2 * ((x - average_x) / standart_deviation_x**2))
 
 def adjust_standart_deviation_x(error, w1, w2, y1, y2, average_x, standart_deviation_x, x, group):
     if group == 1:
+        # de/dstandart_deviantion_x1
         return LEARNING_RATE * (error * w2 * ((y1 - y2) / (w1 + w2)**2) * w1 * (x - average_x)**2 / standart_deviation_x**3)
     else:
+        # de/dstandart_deviantion_x2
         return LEARNING_RATE * (error * w1 * ((y2 - y1) / (w1 + w2)**2) * w2 * (x - average_x)**2 / standart_deviation_x**3)
 
 def plot(xs, ys, i, average_error):
-    # Criando um gráfico de dispersão
+    # scatter plot
     plt.scatter(xs, np.power(xs, 2), label='f(x) = x²', color='blue')
     plt.scatter(xs, ys, label='Fuzzy TSK', color='red')
 
-    # Adicionando rótulos aos eixos e título ao gráfico
+    # labels
     plt.xlabel('x')
     plt.ylabel('y')
 
@@ -107,16 +123,16 @@ def main():
             errors[random_index] = ys[random_index] - x**2
 
             # update p1
-            p1 -= adjust_pq(errors[random_index], w1, w2, x, 1)
+            p1 -= adjust_p(errors[random_index], w1, w2, x, 1)
 
             # update p2
-            p2 -= adjust_pq(errors[random_index], w1, w2, x, 2)
+            p2 -= adjust_p(errors[random_index], w1, w2, x, 2)
 
             # update q1
-            q1 -= adjust_pq(errors[random_index], w1, w2, x, 1)
+            q1 -= adjust_q(errors[random_index], w1, w2, x, 1)
             
             # update q2
-            q2 -= adjust_pq(errors[random_index], w1, w2, x, 2)
+            q2 -= adjust_q(errors[random_index], w1, w2, x, 2)
 
             # hold the old average value for future
             leg_average_x1 = average_x1
