@@ -1,0 +1,14 @@
+Regressão Linear com uma variável -> h(x) = Teta0 + Teta1 * x
+
+1 -> Definir valores iniciais de Teta0 e Teta1
+2 OK -> Definir equação de custo (J)
+3 -> Iterar sobre todos os valores de entrada
+4 -> Calcular o h para cada entrada
+5 -> Calcular o j para cada entrada
+6 -> Ajustar os valores de Teta para cada entrada
+7 -> Definir o número de épocas de iteração
+8 -> Plotar Regressão Linear e gráfico de erro
+9 -> Ler arquivo de entrada e plotar informações lidas
+
+Dúvidas
+1 - Na função de erro (J) é o somatório ao quadrado ou é o somatório do quadrado de cada erro?
